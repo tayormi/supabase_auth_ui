@@ -1,0 +1,25 @@
+name: supabase_auth_ui
+description: A Flutter project with Supabase authentication and beautiful UI.
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  supabase_flutter: ^1.10.25
+  cupertino_icons: ^1.0.2
+  go_router: ^13.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/logo/
