@@ -1,17 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:supabase_auth_ui/features/auth/providers/auth_provider.dart';
 
-import 'package:supabase_flutter/supabase_flutter.dart';
-
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
-  Future<void> _handleLogout(BuildContext context) async {
-    await Supabase.instance.client.auth.signOut();
-    // GoRouter will automatically redirect to login
+  Future<void> _handleLogout(BuildContext context, WidgetRef ref) async {
+    await ref.read(authProvider.notifier).signOut();
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authState = ref.watch(authProvider);
+
+    final user = switch (authState) {
+      AuthStateAuthenticated() => authState.user,
+      _ => null,
+    };
+
+    if (user == null) {
+      return const Scaffold(
+        body: Center(
+          child: Text('User not found'),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Image.asset(
@@ -21,7 +35,7 @@ class HomeScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: () => _handleLogout(context),
+            onPressed: () => _handleLogout(context, ref),
           ),
         ],
       ),
@@ -32,7 +46,7 @@ class HomeScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Welcome!',
+                'Welcome ${user.email}',
                 style: Theme.of(context).textTheme.displayMedium,
               ),
               const SizedBox(height: 8),
